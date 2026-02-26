@@ -8,66 +8,34 @@
 </head>
 <body>
 
-<!-- ================= HEADER ================= -->
-<header class="main-header">
-  <div class="header-inner">
-    <div class="logo-area">
-      <!-- Masukkan logo PNG kamu di bawah ini -->
-      <img src="udesembakologo.png" alt="Logo UDE" class="logo-img">
-    </div>
-    <div class="brand-text">
-      <h1>UDE Sembako</h1>
-      <span>Bukittinggi</span>
-    </div>
-  </div>
+<header>
+  <img src="logo-ude.png" alt="Logo UDE" class="logo">
+  <h1>UDE Sembako Bukittinggi</h1>
 </header>
 
-<!-- ================= PROMO INFO ================= -->
 <div class="sub">
 🎁 GRATIS ONGKIR: Gadut (semua pembelian) <br>
 Bukittinggi & Tilatang Kamang jika beli >1 item <br>
 atau beli Beras 10kg (Rp. 180.000)
 </div>
 
-<!-- ================= CONTAINER ================= -->
 <div class="container">
-
-  <!-- ========== PRODUCT LIST ========== -->
   <div id="productList"></div>
 
-  <!-- ========== CART ========== -->
   <div class="cart">
-    <h3>Keranjang Belanja</h3>
+    <h3>Keranjang</h3>
+    <div id="cartItems">Belum ada barang</div>
 
-    <div id="cartItems" class="cart-items">
-      Belum ada barang
+    <div class="total-details">
+      <div>Total Barang: <span id="totalItems">0</span></div>
+      <div>Ongkos Kirim: <span id="shippingCost">Rp. 0</span></div>
+      <div class="total-pay">Total Bayar: <span id="summary">Rp. 0</span></div>
     </div>
 
-    <!-- ===== SUMMARY ===== -->
-    <div class="summary-box">
-      <div class="summary-line small">
-        <span>Total Barang</span>
-        <span id="totalBarang">Rp 0</span>
-      </div>
-
-      <div class="summary-line small">
-        <span>Ongkos Kirim</span>
-        <span id="ongkir">Rp 0</span>
-      </div>
-
-      <div class="summary-divider"></div>
-
-      <div class="summary-line total-final">
-        <span>Total Pembayaran</span>
-        <span id="totalBayar">Rp 0</span>
-      </div>
-    </div>
-
-    <!-- ===== FORM ===== -->
-    <input type="text" id="namaPemesan" placeholder="Nama Pemesan / Nama Toko">
+    <input type="text" id="namaPemesan" placeholder="Nama Pemesan / Toko">
     <input type="text" id="detailAlamat" placeholder="Detail alamat lengkap">
 
-    <select id="area">
+    <select id="area" onchange="updateSummary()">
       <option value="">Pilih Lokasi</option>
       <option value="bukittinggi">Bukittinggi</option>
       <option value="gadut">Gadut</option>
@@ -75,46 +43,40 @@ atau beli Beras 10kg (Rp. 180.000)
       <option value="lainnya">Luar Area</option>
     </select>
 
-    <!-- ===== METODE BAYAR ===== -->
     <div class="payment-container">
       <div class="payment-option">
-        <input type="radio" name="bayar" value="COD" id="cod">
-        <label for="cod">COD (Bayar di Tempat)</label>
+        <div class="payment-label">
+          <div class="main">COD</div>
+          <div class="sub">Bayar di Tempat</div>
+        </div>
+        <input type="radio" name="bayar" value="COD" id="cod" checked>
       </div>
 
       <div class="payment-option">
+        <div class="payment-label">
+          <div class="main">TRANSFER</div>
+          <div class="sub">Transfer Bank</div>
+        </div>
         <input type="radio" name="bayar" value="TRANSFER" id="transfer">
-        <label for="transfer">Transfer Bank</label>
       </div>
 
       <div id="transferNote" class="transfer-note hidden">
-        Nomor Rekening Pembayaran UDE Sembako akan dikirimkan ke WhatsApp Anda setelah Klik Tombol Pesan.
+        Nomor Rekening Pembayaran UDE Sembako akan dikirim via WhatsApp setelah Klik Tombol Pesan
       </div>
-
       <div class="cancel-note">
-        Jangan khawatir, Anda masih bisa membatalkan pesanan dengan menghubungi kami.
+        Jangan khawatir, Anda masih bisa membatalkan pesanan jika sudah terlanjur memesan :)
       </div>
     </div>
 
-    <!-- ===== CHECKOUT BUTTON ===== -->
-    <button class="checkout-btn" onclick="checkout()">
-      Kirim Pesanan Ke Admin WhatsApp
-    </button>
-
-    <div class="alamatGudang">
-      Alamat gudang kami: Gadut, Tilatang Kamang, Agam
-    </div>
+    <button class="checkout" onclick="checkout()">Kirim Pesanan Ke Admin WhatsApp</button>
+    <div class="alamatGudang"><em>Alamat gudang kami: Gadut, Tilatang Kamang, Agam</em></div>
   </div>
-
 </div>
 
-<!-- ================= FLOATING BUTTON ================= -->
-<div id="floatingCheckout">
-  <span>Scroll ke Checkout</span>
-  <div class="arrow-down"></div>
+<div id="floatingCheckout" onclick="scrollToCart()">
+  ⬇ Geser ke bawah untuk checkout
 </div>
 
 <script src="script.js"></script>
 </body>
 </html>
-
