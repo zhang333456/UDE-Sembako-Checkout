@@ -1,0 +1,9 @@
+[
+  {"id":1,"name":"Minyak Kita 1 Dus","price":320000,"img":"images/minyak1dus.png","active":true},
+  {"id":2,"name":"Minyak Kita 1 Liter","price":16000,"img":"images/minyak1liter.png","active":true},
+  {"id":3,"name":"Minyak Kita 2 Liter","price":31000,"img":"images/minyak2liter.png","active":true},
+  {"id":4,"name":"Beras 5 Kg","price":65000,"img":"images/beras5kg.png","active":true},
+  {"id":5,"name":"Beras 10 Kg","price":180000,"img":"images/beras10kg.png","active":true},
+  {"id":6,"name":"Gas 3 Kg","price":22000,"img":"images/gas3kg.png","active":true},
+  {"id":7,"name":"Gas 5 Kg","price":85000,"img":"images/gas5kg.png","active":true}
+]
