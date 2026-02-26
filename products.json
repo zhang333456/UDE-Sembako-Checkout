@@ -1,10 +1,10 @@
 [
-  {"id":1,"name":"Minyak Kita 1 Dus 1 liter (isi 12 pcs)","price":1980000,"img":"minyakkitadus.jpeg","active":true,"category":"Minyak"},
-  {"id":2,"name":"Minyak Kita 1 Dus 2 liter (isi 6 pcs)","price":2040000,"img":"minyakkitadus.jpeg","active":true,"category":"Minyak"},
-  {"id":3,"name":"Minyak Kita 1 Liter","price":17000,"img":"minyakkita1liter.jpeg","active":true,"category":"Minyak"},
-  {"id":4,"name":"Minyak Kita 2 Liter","price":33000,"img":"minyakkita2liter.jpeg","active":true,"category":"Minyak"},
-  {"id":5,"name":"Beras 5 Kg","price":65000,"img":"berasfoto1.jpeg","active":true,"category":"Beras"},
-  {"id":6,"name":"Beras 10 Kg","price":180000,"img":"berasfoto1.jpeg","active":true,"category":"Beras"},
-  {"id":7,"name":"Gas 3 Kg","price":22000,"img":"gaslpg3kg.jpeg","active":true,"category":"Gas"},
-  {"id":8,"name":"Gas 10 Kg","price":85000,"img":"gaslpg3kg.jpeg","active":true,"category":"Gas"}
+  {"id":1,"name":"Minyak Kita 1 Dus 1 liter (isi 12 pcs)","price":1980000,"img":"minyakkitadus.jpeg","category":"Minyak","active":true},
+  {"id":2,"name":"Minyak Kita 1 Dus 2 liter (isi 6 pcs)","price":2040000,"img":"minyakkitadus.jpeg","category":"Minyak","active":true},
+  {"id":3,"name":"Minyak Kita 1 Liter","price":17000,"img":"minyakkita1liter.jpeg","category":"Minyak","active":true},
+  {"id":4,"name":"Minyak Kita 2 Liter","price":33000,"img":"minyakkita2liter.jpeg","category":"Minyak","active":true},
+  {"id":5,"name":"Beras 5 Kg","price":65000,"img":"berasfoto1.jpeg","category":"Beras","active":true},
+  {"id":6,"name":"Beras 10 Kg","price":180000,"img":"berasfoto1.jpeg","category":"Beras","active":true},
+  {"id":7,"name":"Gas 3 Kg","price":22000,"img":"gaslpg3kg.jpeg","category":"Gas","active":true},
+  {"id":8,"name":"Gas 10 Kg","price":85000,"img":"gaslpg3kg.jpeg","category":"Gas","active":true}
 ]
