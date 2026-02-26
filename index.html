@@ -2,15 +2,13 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>UDE Sembako Bukittinggi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UDE Sembako Bukittinggi</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  UDE Sembako Bukittinggi
-</header>
+<header>UDE Sembako Bukittinggi</header>
 
 <div class="sub">
 🎁 GRATIS ONGKIR: Gadut (semua pembelian) <br>
@@ -19,48 +17,41 @@ atau beli Beras 10kg (Rp. 180.000)
 </div>
 
 <div class="container">
+  <div id="productList"></div>
 
-<!-- Nama & Alamat Pemesan -->
-<div class="checkout-info">
-  <input type="text" id="customerName" placeholder="Nama Pemesan / Nama Toko">
-  <input type="text" id="detailAlamat" placeholder="Detail Alamat Lengkap">
-  <select id="area" onchange="updateSummary()">
-    <option value="">Pilih Kecamatan</option>
-    <option value="bukittinggi">Bukittinggi</option>
-    <option value="gadut">Gadut</option>
-    <option value="tilatang kamang">Tilatang Kamang</option>
-    <option value="lainnya">Luar Area</option>
-  </select>
-</div>
+  <div class="cart">
+    <h3>Keranjang</h3>
+    <div id="cartItems">Belum ada barang</div>
+    <div id="promoInfo"></div>
+    <div class="total" id="summary">Total: Rp. 0</div>
 
-<!-- Daftar Produk -->
-<div id="productList"></div>
+    <input type="text" id="namaPemesan" placeholder="Nama Pemesan / Nama Toko">
+    <input type="text" id="detailAlamat" placeholder="Detail alamat lengkap">
 
-<!-- Keranjang -->
-<div class="cart">
-  <h3>Keranjang</h3>
-  <div id="cartItems">Belum ada barang</div>
+    <select id="area" onchange="updateSummary()">
+      <option value="">Pilih Kecamatan</option>
+      <option value="bukittinggi">Bukittinggi</option>
+      <option value="gadut">Gadut</option>
+      <option value="tilatang kamang">Tilatang Kamang</option>
+      <option value="lainnya">Luar Area</option>
+    </select>
 
-  <div id="promoInfo"></div>
-  <div class="total" id="summary">Total: Rp. 0</div>
-
-  <!-- Metode Bayar -->
-  <div class="payment-method">
-    <label><input type="radio" name="payment" value="COD" onclick="updatePaymentNote()"> COD</label>
-    <label><input type="radio" name="payment" value="TRANSFER" onclick="updatePaymentNote()"> TRANSFER BANK</label>
-    <div id="transferNote" class="note-small"></div>
-    <div class="note-small">
-      Jangan khawatir, anda masih bisa membatalkan pesanan jika sudah terlanjur memesan dengan menghubungi kami :)
+    <div class="metodeBayar">
+      <label><input type="radio" name="bayar" value="COD" onclick="updateSummary()"> COD</label>
+      <label><input type="radio" name="bayar" value="TRANSFER" onclick="updateSummary()"> TRANSFER BANK</label>
+      <div id="transferNote">*No rek UDE Sembako akan dikirim via WhatsApp setelah memesan</div>
+      <div class="note">Jangan khawatir, Anda masih bisa membatalkan pesanan jika sudah terlanjur memesan dengan menghubungi kami :)</div>
     </div>
+
+    <button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
+
+    <div class="alamatGudang"><em>Alamat gudang kami: Gadut, Tilatang Kamang, Agam</em></div>
   </div>
-
-  <button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
-
-  <div class="note-footer"><em>Alamat gudang kami : Gadut, Tilatang Kamang, Agam</em></div>
 </div>
 
-<!-- Floating Checkout -->
-<button id="floatingCheckout" onclick="scrollToCart()">🛒 Geser ke bawah untuk checkout</button>
+<div id="floatingCheckout" onclick="scrollToCart()">
+  Geser ke bawah untuk checkout ⬇
+</div>
 
 <script src="script.js"></script>
 </body>
