@@ -1,203 +1,54 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  margin:0;
-  background:#f5f5f5;
-  color:#222;
-}
+/* RESET */
+* {margin:0;padding:0;box-sizing:border-box;}
+body {font-family:'Segoe UI',sans-serif; background:#f4f6f9; line-height:1.5;}
 
+/* HEADER */
 header {
-  display:flex;
-  align-items:center;
-  gap:10px;
-  position:sticky;
-  top:0;
-  background:linear-gradient(90deg,#006400,#228B22);
-  color:white;
-  padding:12px 15px;
-  z-index:999;
+  position: sticky; top:0; z-index:999;
+  display:flex; align-items:center; gap:10px;
+  background:white; padding:15px;
 }
+header .logo {width:50px;}
+header h1 {color:#006400; font-weight:700; font-size:20px; font-family: 'Segoe UI', sans-serif;}
 
-header .logo {
-  width:50px;
-  height:auto;
-}
+/* SUB INFO */
+.sub {text-align:center; font-size:13px; padding:8px; background:#fff9e6;}
 
-header h1 {
-  font-size:18px;
-  font-weight:bold;
-  flex:1;
-}
+/* PRODUK CARD */
+.container {max-width:650px; margin:auto; padding:15px;}
+.product {display:flex; align-items:center; gap:10px; background:white; padding:10px; border-radius:10px; box-shadow:0 3px 8px rgba(0,0,0,0.08); margin-bottom:12px;}
+.product img {width:70px; height:70px; object-fit:cover; border-radius:8px;}
+.product .info {flex:1;}
+.product .info b {display:block; margin-bottom:4px;}
+.product .info .price {color:#e60000; font-weight:bold;}
+.product .actions {text-align:center;}
+.product .actions span.qtyLabel {margin-right:6px;}
+.qty-btn {background:#228B22; border:none; color:white; padding:6px 10px; border-radius:6px; cursor:pointer; margin:2px;}
+.product .total-product {font-size:12px; color:#006400; margin-top:4px;}
 
-.sub {
-  text-align:center;
-  font-size:13px;
-  padding:8px;
-  background:#fff3cd;
-}
+/* CART MINI */
+.cart {background:white; padding:15px; border-radius:10px; box-shadow:0 3px 10px rgba(0,0,0,0.08); margin-top:20px;}
+.cart-item {display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; font-size:14px;}
+.cart-item .hapus {background:#d32f2f; color:white; padding:3px 6px; border-radius:4px; cursor:pointer; display:flex; align-items:center; gap:3px;}
+.totalInfo div {font-size:13px; margin-top:3px;}
+.totalPayment {font-weight:bold; font-size:16px; color:#006400; margin-top:5px;}
 
-.container {
-  max-width:650px;
-  margin:auto;
-  padding:15px;
-}
+/* INPUTS */
+.cart input, .cart textarea, .cart select {width:100%; padding:8px; margin-top:6px; border-radius:6px; border:1px solid #ccc; margin-bottom:6px;}
+.cart textarea {resize:none; height:50px;}
 
-.category-title {
-  font-weight:500;
-  font-size:14px;
-  margin-top:20px;
-  margin-bottom:6px;
-  color:#555;
-  border-bottom:1px solid #ccc;
-  padding-bottom:4px;
-}
+/* PAYMENT */
+.metodeBayar {display:flex; gap:10px; margin-top:10px;}
+.paymentBox {flex:1; border:1px solid #ccc; border-radius:6px; padding:6px; text-align:left; cursor:pointer;}
+.paymentBox input {float:right;}
 
-.product {
-  background:white;
-  padding:10px;
-  border-radius:8px;
-  margin-bottom:10px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  box-shadow:0 2px 6px rgba(0,0,0,0.06);
-}
+/* NOTES */
+#transferNote {color:red; font-size:12px; display:none;}
+.note {color:gray; font-size:12px; margin-top:2px;}
 
-.product img {
-  width:60px;
-  height:60px;
-  border-radius:6px;
-  object-fit:cover;
-}
+/* CHECKOUT BUTTON */
+.checkout {background:#25D366; border:none; color:white; padding:10px; border-radius:8px; width:100%; margin-top:10px; cursor:pointer; font-weight:bold;}
 
-.product .info {
-  flex:1;
-}
-
-.product .info b {
-  display:block;
-  margin-bottom:4px;
-}
-
-.product .info .price {
-  color:#e60000;
-  font-weight:bold;
-}
-
-.product .actions {
-  text-align:center;
-}
-
-.qty-btn {
-  background:#228B22;
-  color:white;
-  border:none;
-  padding:6px 10px;
-  border-radius:5px;
-  cursor:pointer;
-  margin:2px;
-}
-
-.qty-label {
-  font-size:13px;
-  margin-bottom:2px;
-}
-
-.total-product {
-  font-size:12px;
-  color:green;
-}
-
-.cart {
-  background:white;
-  padding:12px;
-  border-radius:10px;
-  margin-top:20px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.08);
-}
-
-.cart-item {
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:6px;
-  font-size:14px;
-}
-
-.total {
-  font-weight:bold;
-  margin-top:10px;
-  color:#009933;
-}
-
-.checkout {
-  background:#25D366;
-  border:none;
-  color:white;
-  padding:10px;
-  border-radius:8px;
-  width:100%;
-  margin-top:10px;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-#floatingCheckout {
-  position:fixed;
-  bottom:15px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#d2b48c; /* coklat susu */
-  color:white;
-  padding:8px 12px;
-  border-radius:20px;
-  font-size:14px;
-  font-weight:bold;
-  cursor:pointer;
-  z-index:999;
-  display:none;
-  animation:float 1s infinite alternate;
-}
-
-@keyframes float {
-  0%{transform:translateX(-50%) translateY(0);}
-  100%{transform:translateX(-50%) translateY(-4px);}
-}
-
-.metodeBayar {
-  margin-top:10px;
-  display:flex;
-  gap:8px;
-}
-
-.pay-box {
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  border:1px solid #ccc;
-  padding:6px 8px;
-  border-radius:6px;
-  cursor:pointer;
-  flex:1;
-}
-
-.pay-box input {
-  align-self:flex-end;
-}
-
-#transferNote {
-  font-size:12px;
-  color:red;
-  margin-top:4px;
-}
-
-.note {
-  font-size:10px;
-  color:gray;
-  margin-top:2px;
-}
-
-.alamatGudang {
-  font-size:10px;
-  color:#888;
-  margin-top:6px;
-  font-style:italic;
-}
+/* FLOATING CHECKOUT */
+#floatingCheckout {position:fixed; bottom:15px; left:50%; transform:translateX(-50%); background:#d2b48c; color:white; padding:8px 12px; border-radius:20px; cursor:pointer; font-weight:bold; display:block; animation:float 1s infinite alternate;}
+@keyframes float {0%{transform:translateX(-50%) translateY(0);}100%{transform:translateX(-50%) translateY(-4px);}}
