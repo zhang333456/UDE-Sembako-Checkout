@@ -1,36 +1,38 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   margin:0;
-  background:#f4f6f9;
+  background:#f5f5f5;
+  color:#222;
 }
 
 header {
-  position: sticky;
-  top:0;
   display:flex;
   align-items:center;
-  padding:10px 20px;
-  background: linear-gradient(90deg,#004d00,#1b5e20);
+  gap:10px;
+  position:sticky;
+  top:0;
+  background:linear-gradient(90deg,#006400,#228B22);
   color:white;
+  padding:12px 15px;
   z-index:999;
 }
 
 header .logo {
   width:50px;
   height:auto;
-  margin-right:12px;
 }
 
-header .title {
+header h1 {
+  font-size:18px;
   font-weight:bold;
-  font-size:20px;
+  flex:1;
 }
 
 .sub {
   text-align:center;
   font-size:13px;
-  padding:6px;
-  background:#fff8e1;
+  padding:8px;
+  background:#fff3cd;
 }
 
 .container {
@@ -40,99 +42,90 @@ header .title {
 }
 
 .category-title {
-  font-weight:400;
+  font-weight:500;
   font-size:14px;
-  color:#444;
   margin-top:20px;
-}
-
-.category-divider {
-  border:none;
+  margin-bottom:6px;
+  color:#555;
   border-bottom:1px solid #ccc;
-  margin-bottom:8px;
+  padding-bottom:4px;
 }
 
-.product-card {
-  display:flex;
-  align-items:center;
-  gap:10px;
+.product {
   background:white;
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:10px;
-  box-shadow:0 3px 8px rgba(0,0,0,0.08);
-}
-
-.product-card img {
-  width:70px;
-  height:70px;
-  object-fit:cover;
+  padding:10px;
   border-radius:8px;
+  margin-bottom:10px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.06);
 }
 
-.product-card .info {
+.product img {
+  width:60px;
+  height:60px;
+  border-radius:6px;
+  object-fit:cover;
+}
+
+.product .info {
   flex:1;
 }
 
-.product-card .info b {
+.product .info b {
   display:block;
   margin-bottom:4px;
 }
 
-.product-card .price {
+.product .info .price {
   color:#e60000;
   font-weight:bold;
 }
 
-.quantity-controls {
-  display:flex;
-  align-items:center;
-  gap:6px;
-  margin-top:6px;
-}
-
-.quantity-controls .qty-label {
-  font-size:12px;
-  color:#333;
+.product .actions {
+  text-align:center;
 }
 
 .qty-btn {
-  padding:6px 10px;
-  background:#1b5e20;
+  background:#228B22;
   color:white;
   border:none;
-  border-radius:6px;
+  padding:6px 10px;
+  border-radius:5px;
   cursor:pointer;
-  font-size:14px;
+  margin:2px;
+}
+
+.qty-label {
+  font-size:13px;
+  margin-bottom:2px;
 }
 
 .total-product {
   font-size:12px;
   color:green;
-  margin-top:4px;
 }
 
 .cart {
   background:white;
-  padding:15px;
+  padding:12px;
   border-radius:10px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.08);
   margin-top:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
 }
 
 .cart-item {
   display:flex;
   justify-content:space-between;
-  margin-bottom:8px;
+  margin-bottom:6px;
   font-size:14px;
-  font-weight:bold;
 }
 
-.summary {
+.total {
   font-weight:bold;
   margin-top:10px;
   color:#009933;
-  font-size:14px;
 }
 
 .checkout {
@@ -143,11 +136,11 @@ header .title {
   border-radius:8px;
   width:100%;
   margin-top:10px;
-  font-weight:bold;
   cursor:pointer;
+  font-weight:bold;
 }
 
-.floatingCheckout {
+#floatingCheckout {
   position:fixed;
   bottom:15px;
   left:50%;
@@ -156,51 +149,48 @@ header .title {
   color:white;
   padding:8px 12px;
   border-radius:20px;
-  cursor:pointer;
-  display:none;
+  font-size:14px;
   font-weight:bold;
+  cursor:pointer;
+  z-index:999;
+  display:none;
   animation:float 1s infinite alternate;
 }
 
 @keyframes float {
-  0% {transform:translateX(-50%) translateY(0);}
-  100% {transform:translateX(-50%) translateY(-4px);}
+  0%{transform:translateX(-50%) translateY(0);}
+  100%{transform:translateX(-50%) translateY(-4px);}
 }
 
 .metodeBayar {
   margin-top:10px;
   display:flex;
-  gap:10px;
+  gap:8px;
 }
 
-.pay-option {
+.pay-box {
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:6px 10px;
+  flex-direction:column;
+  align-items:flex-start;
   border:1px solid #ccc;
+  padding:6px 8px;
   border-radius:6px;
+  cursor:pointer;
   flex:1;
 }
 
-.pay-text {
-  display:flex;
-  flex-direction:column;
+.pay-box input {
+  align-self:flex-end;
+}
+
+#transferNote {
   font-size:12px;
-}
-
-.pay-option input {
-  margin-left:auto;
-}
-
-.transfer-note {
-  font-size:11px;
   color:red;
   margin-top:4px;
 }
 
 .note {
-  font-size:11px;
+  font-size:10px;
   color:gray;
   margin-top:2px;
 }
@@ -208,14 +198,6 @@ header .title {
 .alamatGudang {
   font-size:10px;
   color:#888;
-  margin-top:10px;
+  margin-top:6px;
   font-style:italic;
-}
-
-input, select {
-  margin-top:8px;
-  padding:8px;
-  border-radius:6px;
-  border:1px solid #ccc;
-  width:100%;
 }
