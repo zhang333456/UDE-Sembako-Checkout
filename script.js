@@ -150,3 +150,4 @@ function checkout() {
 
   window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank");
 }
+
