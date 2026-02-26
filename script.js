@@ -1,14 +1,22 @@
 const whatsappNumber = "6281266221333";
-let shippingNear = 8000;
-let shippingDefault = 15000;
-let cart = {};
+
 let products = [];
+let cart = {};
+let ongkirData = {};
 
 // ===== LOAD DATA =====
 window.addEventListener("DOMContentLoaded", async () => {
-  products = await fetch("products.json").then(r => r.json());
-  renderProducts();
-  updateSummary();
+  try {
+    // Ambil data produk
+    products = await fetch("products.json").then(r => r.json());
+    // Ambil data ongkir
+    ongkirData = await fetch("ongkir.json").then(r => r.json());
+
+    renderProducts();
+    updateSummary();
+  } catch (err) {
+    console.error("Error loading JSON:", err);
+  }
 });
 
 // ===== RENDER PRODUK =====
@@ -19,7 +27,6 @@ function renderProducts() {
   products.forEach(p => {
     const card = document.createElement("div");
     card.className = "product-card";
-
     card.innerHTML = `
       <h3>${p.name}</h3>
       <div class="price">Rp ${p.price.toLocaleString()}</div>
@@ -30,7 +37,6 @@ function renderProducts() {
       </div>
       <div class="total-product" id="total-${p.id}"></div>
     `;
-
     productList.appendChild(card);
   });
 }
@@ -48,6 +54,17 @@ function changeQty(id, delta) {
   updateSummary();
 }
 
+// ===== HITUNG ONGKIR DARI JSON =====
+function getShipping(area, totalItems) {
+  if (!ongkirData[area]) return 15000; // default
+  const rules = ongkirData[area];
+  // Cari rule yang cocok berdasarkan totalItems
+  for (let r of rules) {
+    if (totalItems >= r.minItem && totalItems <= r.maxItem) return r.cost;
+  }
+  return rules[rules.length - 1].cost; // fallback terakhir
+}
+
 // ===== UPDATE SUMMARY & CART =====
 function updateSummary() {
   const cartItemsDiv = document.getElementById("cartItems");
@@ -62,15 +79,14 @@ function updateSummary() {
 
     // Update product total di product-card
     const totalDiv = document.getElementById(`total-${id}`);
-    totalDiv.innerText = item.qty > 0 ? `Subtotal: Rp ${ (item.price*item.qty).toLocaleString() }` : "";
+    totalDiv.innerText = item.qty > 0 ? `Subtotal: Rp ${(item.price*item.qty).toLocaleString()}` : "";
 
     // Render cart item
     const cartItem = document.createElement("div");
     cartItem.className = "cart-item";
-
     cartItem.innerHTML = `
       <h4>${item.name}</h4>
-      <div class="price">Rp ${ (item.price*item.qty).toLocaleString() }</div>
+      <div class="price">Rp ${(item.price*item.qty).toLocaleString()}</div>
       <div class="quantity-cart">
         <button onclick="changeQty(${id}, -1)">-</button>
         <span>${item.qty}</span>
@@ -78,31 +94,22 @@ function updateSummary() {
         <button class="delete" onclick="deleteItem(${id})">🗑</button>
       </div>
     `;
-
     cartItemsDiv.appendChild(cartItem);
 
-    // Update qty di product-card
     const qtySpan = document.getElementById(`qty-${id}`);
     if (qtySpan) qtySpan.innerText = item.qty;
   }
 
   if (totalItems === 0) cartItemsDiv.innerHTML = "<p>Belum ada barang</p>";
 
-  // Hitung ongkir
-  const area = document.getElementById("area").value;
-  let shipping = shippingDefault;
-  if (area === "gadut") shipping = 0;
-  else if ((area === "bukittinggi" || area === "tilatang kamang") && totalItems > 1) shipping = 0;
-  else if (area === "bukittinggi" || area === "tilatang kamang") shipping = shippingNear;
-
+  const area = document.getElementById("area").value || "lainnya";
+  const shipping = getShipping(area, totalItems);
   const finalTotal = total + shipping;
 
-  // Update summary
   document.getElementById("totalItems").innerText = `Rp ${total.toLocaleString()}`;
   document.getElementById("shippingCost").innerText = `Rp ${shipping.toLocaleString()}`;
   document.getElementById("summary").innerText = `Rp ${finalTotal.toLocaleString()}`;
 
-  // Floating checkout
   const floating = document.getElementById("floatingCheckout");
   floating.style.display = totalItems > 0 ? "block" : "none";
 }
@@ -127,7 +134,6 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
 
   const area = document.getElementById("area").value;
   const alamat = document.getElementById("detailAlamat").value.trim();
-
   if (!area) { alert("Pilih lokasi!"); return; }
   if (!alamat) { alert("Isi alamat lengkap!"); return; }
 
@@ -137,11 +143,7 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
     totalItems += cart[id].qty;
   }
 
-  let shipping = shippingDefault;
-  if (area === "gadut") shipping = 0;
-  else if ((area === "bukittinggi" || area === "tilatang kamang") && totalItems > 1) shipping = 0;
-  else if (area === "bukittinggi" || area === "tilatang kamang") shipping = shippingNear;
-
+  const shipping = getShipping(area, totalItems);
   const finalTotal = total + shipping;
 
   let metode = document.querySelector('input[name="payment"]:checked')?.value;
@@ -151,7 +153,7 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
   let no = 1;
   for (let id in cart) {
     const i = cart[id];
-    message += `${no}. ${i.name} x${i.qty} = Rp ${ (i.price*i.qty).toLocaleString() }%0A`;
+    message += `${no}. ${i.name} x${i.qty} = Rp ${(i.price*i.qty).toLocaleString()}%0A`;
     no++;
   }
   message += `%0AOngkir: Rp ${shipping.toLocaleString()}`;
