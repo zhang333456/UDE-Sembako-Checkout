@@ -1,38 +1,34 @@
-document.addEventListener("DOMContentLoaded", async function() {
-
-const productList = document.getElementById("productList");
-const cartItemsDiv = document.getElementById("cartItems");
-const summaryDiv = document.getElementById("summary");
-const promoInfoDiv = document.getElementById("promoInfo");
-const floating = document.getElementById("floatingCheckout");
-const transferNoteDiv = document.getElementById("transferNote");
-
-let products = await fetch('products.json').then(r=>r.json());
-let ongkirData = await fetch('ongkir.json').then(r=>r.json());
-let cart = {};
-
 const whatsappNumber = "6281266221333";
+let shippingNear = 8000;
+let shippingDefault = 15000;
+let cart = {};
+let products = [];
 
-function formatRupiah(num){
-  return "Rp " + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");
-}
+window.addEventListener("DOMContentLoaded", async () => {
+  // Fetch JSON
+  products = await fetch("products.json").then(r=>r.json());
+  renderProducts();
+  updateSummary();
+});
 
-// ===== Render Produk =====
-function renderProducts(){
-  productList.innerHTML="";
-  products.forEach(p=>{
+// ===== RENDER PRODUK =====
+function renderProducts() {
+  const productList = document.getElementById("productList");
+  productList.innerHTML = "";
+  products.forEach(p => {
     productList.innerHTML += `
       <div class="product">
+        <img src="${p.img}" alt="${p.name}">
         <div class="info">
           <b>${p.name}</b>
-          <div class="price-total" id="total-${p.id}">${formatRupiah(p.price)}</div>
+          <div class="price">Rp ${p.price.toLocaleString()}</div>
         </div>
-        <div>
-          <button onclick="buyProduct(${p.id})">Beli</button>
-          <div id="qty-controls-${p.id}" style="display:none; margin-top:5px;">
-            <button onclick="changeQty(${p.id},-1)">-</button>
-            <span id="qty-${p.id}">0</span> pcs
-            <button onclick="changeQty(${p.id},1)">+</button>
+        <div class="actions">
+          <button class="buy-btn" onclick="addToCart(${p.id})">Beli</button>
+          <div>
+            <button class="qty-btn" onclick="changeQty(${p.id},-1)">-</button>
+            <span id="qty-${p.id}">0</span>
+            <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
           </div>
         </div>
       </div>
@@ -40,135 +36,117 @@ function renderProducts(){
   });
 }
 
-renderProducts();
-
-// ===== Tambah / Kurang =====
-window.buyProduct = function(id){
+// ===== TAMBAH KE CART =====
+function addToCart(id) {
   if(!cart[id]) cart[id] = {...products.find(p=>p.id===id), qty:1};
-  document.getElementById(`qty-controls-${id}`).style.display="block";
   updateSummary();
 }
 
-window.changeQty = function(id,delta){
+// ===== UPDATE QUANTITY =====
+function changeQty(id, delta) {
   if(!cart[id] && delta>0) cart[id] = {...products.find(p=>p.id===id), qty:1};
-  else if(cart[id]) cart[id].qty += delta;
-  if(cart[id]?.qty <=0) delete cart[id];
-  document.getElementById(`qty-controls-${id}`).style.display = cart[id]? "block":"none";
+  else if(cart[id]){
+    cart[id].qty += delta;
+    if(cart[id].qty <= 0) delete cart[id];
+  }
   updateSummary();
 }
 
-// ===== Update Payment Note =====
-window.updatePaymentNote = function(){
-  const method = document.querySelector('input[name="payment"]:checked')?.value;
-  if(method === "TRANSFER"){
-    transferNoteDiv.innerHTML = "No rek UDE Sembako akan kami kirim di WhatsApp setelah memesan";
-  } else {
-    transferNoteDiv.innerHTML = "";
-  }
-}
+// ===== UPDATE SUMMARY =====
+function updateSummary() {
+  let total = 0;
+  let totalItems = 0;
+  const cartItemsDiv = document.getElementById("cartItems");
+  cartItemsDiv.innerHTML = "";
 
-// ===== Update Ringkasan Cart =====
-window.updateSummary = function(){
-  let total=0, totalItems=0;
-  let area = document.getElementById("area").value;
-  let cartHtml = "";
-
-  Object.values(cart).forEach((item,index)=>{
-    const subtotal = item.price*item.qty;
-    total += subtotal;
+  for(let id in cart){
+    const item = cart[id];
+    total += item.price * item.qty;
     totalItems += item.qty;
-    document.getElementById(`qty-${item.id}`).innerText = item.qty;
-    document.getElementById(`total-${item.id}`).innerText = formatRupiah(subtotal);
 
-    cartHtml += `
+    cartItemsDiv.innerHTML += `
       <div class="cart-item">
-        <b>${index+1}. ${item.name}</b>
-        <div>
-          ${formatRupiah(subtotal)}
-          <button onclick="changeQty(${item.id},-1)">-</button>
-          <button onclick="changeQty(${item.id},1)">+</button>
-          <button onclick="deleteItem(${item.id})">🗑️</button>
-        </div>
+        <span>${item.name} x${item.qty} = Rp ${ (item.price*item.qty).toLocaleString() }</span>
+        <button onclick="deleteItem(${item.id})">🗑</button>
       </div>
     `;
-  });
 
-  cartItemsDiv.innerHTML = cartHtml || "Belum ada barang";
-
-  // Ongkir
-  let shipping = ongkirData.default;
-  let promoText="";
-  let hasBeras10kg = cart[5]?true:false;
-
-  if(ongkirData.gratisArea.includes(area)){
-    shipping = 0;
-    promoText='<div class="badge" style="color:green; font-weight:bold;">GRATIS ONGKIR ✓</div>';
-  } else if(ongkirData.nearbyArea.includes(area) && (totalItems>1 || hasBeras10kg)){
-    shipping=0;
-    promoText='<div class="badge" style="color:green; font-weight:bold;">GRATIS ONGKIR ✓</div>';
-  } else if(ongkirData.nearbyArea.includes(area)){
-    shipping = ongkirData.near;
+    document.getElementById("qty-"+item.id).innerText = item.qty;
   }
 
-  promoInfoDiv.innerHTML = promoText;
+  if(totalItems===0) cartItemsDiv.innerHTML = "Belum ada barang";
 
-  summaryDiv.innerHTML = `
-    Ongkir: ${shipping>0?formatRupiah(shipping):"GRATIS"} | <b>Total Bayar: ${formatRupiah(total+shipping)}</b>
-  `;
+  let area = document.getElementById("area").value;
+  let shipping = shippingDefault;
+  if(area==="gadut") shipping=0;
+  else if((area==="bukittinggi" || area==="tilatang kamang") && totalItems>1) shipping=0;
+  else if(area==="bukittinggi" || area==="tilatang kamang") shipping=shippingNear;
 
-  // Floating checkout
-  floating.style.display = totalItems>0? "block":"none";
+  let finalTotal = total + shipping;
+  document.getElementById("summary").innerText =
+    `Total Barang: Rp ${total.toLocaleString()} | Ongkir: Rp ${shipping.toLocaleString()} | Total Bayar: Rp ${finalTotal.toLocaleString()}`;
+
+  // floating checkout
+  const floating = document.getElementById("floatingCheckout");
+  if(totalItems>0) floating.style.display="block";
+  else floating.style.display="none";
 }
 
-// ===== Delete Item =====
-window.deleteItem = function(id){
+// ===== DELETE ITEM =====
+function deleteItem(id) {
   delete cart[id];
-  document.getElementById(`qty-controls-${id}`).style.display="none";
   updateSummary();
 }
 
-// ===== Checkout =====
-window.checkout = function(){
-  if(Object.keys(cart).length==0){
+// ===== SCROLL TO CART =====
+function scrollToCart() {
+  document.querySelector(".cart").scrollIntoView({behavior:"smooth"});
+}
+
+// ===== CHECKOUT =====
+function checkout() {
+  if(Object.keys(cart).length===0){
     alert("Belum ada barang!");
     return;
   }
 
-  const name = document.getElementById("customerName").value.trim();
-  const detail = document.getElementById("detailAlamat").value.trim();
-  const area = document.getElementById("area").value;
-  const method = document.querySelector('input[name="payment"]:checked')?.value;
+  let nama = document.getElementById("namaPemesan").value;
+  if(nama.trim()===""){ alert("Isi nama pemesan!"); return; }
 
-  if(!name || !detail || !area || !method){
-    alert("Lengkapi semua info, termasuk metode bayar!");
-    return;
-  }
+  let area = document.getElementById("area").value;
+  let alamat = document.getElementById("detailAlamat").value;
 
   let total = 0;
-  let message = `Nama Pemesan/Toko: ${name}%0A`;
+  let totalItems = 0;
+  for(let id in cart){
+    let i = cart[id];
+    total += i.price * i.qty;
+    totalItems += i.qty;
+  }
 
-  Object.values(cart).forEach((item,index)=>{
-    const subtotal = item.price*item.qty;
-    total += subtotal;
-    message += `${index+1}. ${item.name} x${item.qty} pcs = ${formatRupiah(subtotal)}%0A`;
-  });
+  let shipping = shippingDefault;
+  if(area==="gadut") shipping=0;
+  else if((area==="bukittinggi" || area==="tilatang kamang") && totalItems>1) shipping=0;
+  else if(area==="bukittinggi" || area==="tilatang kamang") shipping=shippingNear;
 
-  // Ongkir
-  let shipping = ongkirData.default;
-  if(ongkirData.gratisArea.includes(area)) shipping=0;
-  else if(ongkirData.nearbyArea.includes(area) && (Object.values(cart).reduce((a,b)=>a+b.qty,0)>1 || cart[5])) shipping=0;
-  else if(ongkirData.nearbyArea.includes(area)) shipping=ongkirData.near;
+  let finalTotal = total + shipping;
 
-  message += `Ongkir: ${shipping>0?formatRupiah(shipping):"GRATIS ONGKIR"}%0A`;
-  message += `Total Bayar: ${formatRupiah(total+shipping)}%0A`;
-  message += `METODE BAYAR: ${method}%0A`;
+  let metode = document.querySelector('input[name="bayar"]:checked');
+  if(!metode){ alert("Pilih metode bayar!"); return; }
+  metode = metode.value;
 
-  window.open(`https://wa.me/${whatsappNumber}?text=${message}`,"_blank");
+  let message = `Nama Pemesan: ${nama}%0A`;
+  let no = 1;
+  for(let id in cart){
+    let i = cart[id];
+    message += `${no}. ${i.name} x${i.qty}%0A`;
+    no++;
+  }
+  message += `%0AOngkir: Rp ${shipping.toLocaleString()}`;
+  message += `%0ATotal Bayar: Rp ${finalTotal.toLocaleString()}`;
+  message += `%0AMetode Bayar: ${metode}`;
+  message += `%0AArea: ${area}`;
+  message += `%0AAlamat: ${alamat}`;
+
+  window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank");
 }
-
-// ===== Scroll to Cart =====
-window.scrollToCart = function(){
-  document.querySelector(".cart").scrollIntoView({behavior:"smooth"});
-}
-
-}); // DOMContentLoaded
