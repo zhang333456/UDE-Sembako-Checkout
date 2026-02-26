@@ -1,243 +1,154 @@
-```css
-/* ===== RESET ===== */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: #ffffff;
-  color: #333;
-  line-height: 1.5;
-  padding-bottom: 120px;
+  margin: 0;
+  background: #f4f6f9;
 }
 
-/* ===== HEADER ===== */
 header {
-  position: sticky;
-  top: 0;
-  background: #1b5e20;
+  background: linear-gradient(90deg, #006400, #228B22);
   color: white;
-  padding: 12px 15px;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+
+.sub {
+  text-align: center;
+  font-size: 13px;
+  padding: 8px;
+  background: #fff3cd;
+}
+
+.container {
+  max-width: 650px;
+  margin: auto;
+  padding: 15px;
+}
+
+.product {
+  background: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
   display: flex;
   align-items: center;
   gap: 10px;
-  z-index: 999;
 }
 
-header .logo {
-  width: 50px;
-  height: auto;
-}
-
-header h1 {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-header p {
-  font-size: 14px;
-  margin-left: auto;
-}
-
-/* ===== SUB-INFO ===== */
-.sub {
-  padding: 10px 15px;
-  font-size: 13px;
-  background: #e8f5e9;
-}
-
-/* ===== PRODUK ===== */
-#productList {
-  padding: 15px;
-}
-
-.product-card {
-  border: 1px solid #ddd;
+.product img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
   border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
 }
 
-.product-card h3 {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 8px;
+.product .info {
+  flex: 1;
 }
 
-.product-card .price {
+.product .info b {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.product .info .price {
   color: #e60000;
   font-weight: bold;
-  margin-top: 5px;
 }
 
-.product-card .quantity {
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.quantity button {
-  background: #1b5e20;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.quantity span {
-  font-weight: bold;
-  min-width: 30px;
+.product .actions {
   text-align: center;
 }
 
-.product-card .total-product {
-  font-size: 12px;
-  color: green;
-  margin-top: 5px;
+.qty-btn {
+  background: #228B22;
+  border: none;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 2px;
 }
 
-/* ===== CART ===== */
-#cartItems {
+.buy-btn {
+  background: #006400;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+
+.cart {
+  background: white;
   padding: 15px;
-  border-top: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  margin-top: 20px;
 }
 
 .cart-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.cart-item h4 {
+  margin-bottom: 8px;
+  font-size: 14px;
   font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 5px;
 }
 
-.cart-item .price {
-  font-size: 13px;
-  color: #e60000;
-}
-
-.cart-item .quantity-cart {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.cart-item .quantity-cart button {
-  background: #1b5e20;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  font-size: 14px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.cart-item .quantity-cart span {
-  min-width: 25px;
-  text-align: center;
-}
-
-.cart-item button.delete {
-  background: none;
-  border: none;
-  color: #d32f2f;
-  cursor: pointer;
-  font-size: 18px;
-  margin-left: 5px;
-}
-
-/* ===== TOTAL & ONGKIR ===== */
-.cart-summary {
-  margin-top: 10px;
-}
-
-.cart-summary .small-text {
-  font-size: 12px;
-  color: #555;
-}
-
-.cart-summary .total-bold {
-  font-size: 16px;
+.total {
   font-weight: bold;
-  margin-top: 5px;
-}
-
-/* ===== PAYMENT ===== */
-.payment-method {
   margin-top: 10px;
-  font-size: 14px;
+  color: #009933;
 }
 
-.payment-method label {
-  display: block;
-  margin-bottom: 5px;
-  cursor: pointer;
-}
-
-.payment-method input[type="radio"] {
-  margin-right: 6px;
-}
-
-.note-small {
-  font-size: 12px;
-  color: #d32f2f;
-  margin-top: 5px;
-}
-
-/* ===== CHECKOUT BUTTON ===== */
-#checkoutBtn {
-  width: 100%;
-  padding: 10px;
+.checkout {
   background: #25D366;
   border: none;
   color: white;
-  font-weight: bold;
+  padding: 10px;
   border-radius: 8px;
-  cursor: pointer;
+  width: 100%;
   margin-top: 10px;
-  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-/* ===== FLOATING CHECKOUT ===== */
-#floatingCheckout {
+.floatingCheckout {
   position: fixed;
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  background: #1b5e20;
+  background: #006400;
   color: white;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 14px;
+  padding: 10px 15px;
+  border-radius: 25px;
   cursor: pointer;
-  z-index: 999;
   display: none;
-  animation: float 1.2s infinite alternate;
+  font-weight: bold;
 }
 
-@keyframes float {
-  0% { transform: translateX(-50%) translateY(0); }
-  100% { transform: translateX(-50%) translateY(-4px); }
-}
-
-/* ===== FOOTER ===== */
-footer, .footer-note {
-  text-align: center;
-  font-size: 12px;
-  color: #777;
+.metodeBayar {
   margin-top: 10px;
-  margin-bottom: 20px;
 }
-```
+
+.metodeBayar input {
+  margin-right: 6px;
+}
+
+#transferNote, .note {
+  font-size: 10px;
+  color: gray;
+  margin-top: 2px;
+}
+
+.alamatGudang {
+  font-size: 10px;
+  color: #888;
+  margin-top: 10px;
+  font-style: italic;
+}
