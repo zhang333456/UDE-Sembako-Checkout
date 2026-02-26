@@ -4,36 +4,38 @@ let shippingDefault = 15000;
 let cart = {};
 let products = [];
 
+// LOAD PRODUCTS.JSON
 window.addEventListener("DOMContentLoaded", async () => {
-  products = await fetch("products.json").then(r=>r.json());
-  renderProductsByCategory();
+  products = await fetch("products.json").then(r => r.json());
+  renderProducts();
   updateSummary();
-  setupPaymentToggle();
 });
 
-// ===== RENDER PRODUK PER KATEGORI =====
-function renderProductsByCategory() {
+// ===== RENDER PRODUCT BY CATEGORY =====
+function renderProducts() {
   const productList = document.getElementById("productList");
   productList.innerHTML = "";
 
-  const categories = [...new Set(products.map(p=>p.category))];
+  // GROUP BY CATEGORY
+  const categories = [...new Set(products.map(p => p.category))];
 
-  categories.forEach(cat=>{
-    productList.innerHTML += `<div class="category-label">${cat}</div>`;
-    products.filter(p=>p.category===cat).forEach(p=>{
+  categories.forEach(cat => {
+    productList.innerHTML += `<div class="category-title">${cat}</div>`;
+
+    products.filter(p => p.category === cat).forEach(p => {
       productList.innerHTML += `
         <div class="product">
           <img src="${p.img}" alt="${p.name}">
           <div class="info">
             <b>${p.name}</b>
             <div class="price">Rp ${p.price.toLocaleString()}</div>
-          </div>
-          <div class="actions">
-            <span class="qty-label">Jumlah Pcs:</span>
-            <button class="qty-btn" onclick="changeQty(${p.id},-1)">-</button>
-            <span id="qty-${p.id}">0</span>
-            <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
-            <div class="product-total" id="total-${p.id}">Rp 0</div>
+            <div class="quantity">
+              Jumlah Pcs:
+              <button class="qty-btn" onclick="changeQty(${p.id},-1)">-</button>
+              <span id="qty-${p.id}">${cart[p.id]?.qty || 0}</span>
+              <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+            </div>
+            <div class="total-product" id="total-${p.id}">Rp 0</div>
           </div>
         </div>
       `;
@@ -41,110 +43,110 @@ function renderProductsByCategory() {
   });
 }
 
-// ===== QUANTITY =====
+// ===== CHANGE QUANTITY =====
 function changeQty(id, delta) {
-  if(!cart[id] && delta>0) cart[id] = {...products.find(p=>p.id===id), qty:0};
-  if(cart[id]){
-    cart[id].qty += delta;
-    if(cart[id].qty<=0){
-      cart[id].qty=0;
-      delete cart[id];
-    }
-  }
+  if(!cart[id] && delta>0) cart[id] = {...products.find(p => p.id===id), qty:0};
+  cart[id] = cart[id] || {...products.find(p => p.id===id), qty:0};
+  cart[id].qty += delta;
+  if(cart[id].qty < 0) cart[id].qty = 0;
+  if(cart[id].qty === 0) delete cart[id];
+
+  document.getElementById("qty-"+id).innerText = cart[id]?.qty || 0;
+  document.getElementById("total-"+id).innerText = `Rp ${(cart[id]?.price*cart[id]?.qty || 0).toLocaleString()}`;
+
   updateSummary();
 }
 
 // ===== UPDATE SUMMARY =====
 function updateSummary() {
-  let total=0, totalItems=0;
+  let total = 0, totalItems = 0;
   const cartItemsDiv = document.getElementById("cartItems");
-  cartItemsDiv.innerHTML="";
+  cartItemsDiv.innerHTML = "";
 
   for(let id in cart){
     const item = cart[id];
     total += item.price * item.qty;
     totalItems += item.qty;
 
-    cartItemsDiv.innerHTML += `<div class="cart-item">
-      <span>${item.name} x${item.qty} = Rp ${(item.price*item.qty).toLocaleString()}</span>
-      <button onclick="deleteItem(${item.id})">🗑</button>
-    </div>`;
-
-    document.getElementById("qty-"+item.id).innerText=item.qty;
-    document.getElementById("total-"+item.id).innerText=`Rp ${(item.price*item.qty).toLocaleString()}`;
+    cartItemsDiv.innerHTML += `
+      <div class="cart-item">
+        <span>${item.name} x${item.qty}</span>
+        <span>Rp ${(item.price*item.qty).toLocaleString()}</span>
+        <button onclick="deleteItem(${id})">🗑</button>
+      </div>
+    `;
   }
 
-  if(totalItems===0) cartItemsDiv.innerHTML="Belum ada barang";
+  if(totalItems === 0) cartItemsDiv.innerHTML = "Belum ada barang";
 
-  let area = document.getElementById("area").value;
+  const area = document.getElementById("area").value;
   let shipping = shippingDefault;
   if(area==="gadut") shipping=0;
-  else if((area==="bukittinggi"||area==="tilatang kamang") && totalItems>1) shipping=0;
-  else if(area==="bukittinggi"||area==="tilatang kamang") shipping=shippingNear;
+  else if((area==="bukittinggi" || area==="tilatang kamang") && totalItems>1) shipping=0;
+  else if(area==="bukittinggi" || area==="tilatang kamang") shipping=shippingNear;
 
-  document.getElementById("totalItems").innerText=totalItems;
-  document.getElementById("shippingCost").innerText = shipping===0? "GRATIS ONGKIR" : `Rp ${shipping.toLocaleString()}`;
-  document.getElementById("summary").innerText = `Rp ${(total+shipping).toLocaleString()}`;
+  const finalTotal = total + shipping;
+
+  document.getElementById("totalItems").innerText = `Total Barang: Rp ${total.toLocaleString()}`;
+  document.getElementById("shippingCost").innerText = shipping===0 ? "Ongkir: GRATIS ONGKIR ✅" : `Ongkir: Rp ${shipping.toLocaleString()}`;
+  document.getElementById("summary").innerText = `Total Bayar: Rp ${finalTotal.toLocaleString()}`;
 
   const floating = document.getElementById("floatingCheckout");
-  floating.style.display = totalItems>0? "block":"none";
+  if(totalItems>0) floating.style.display="block";
+  else floating.style.display="none";
 }
 
 // ===== DELETE ITEM =====
 function deleteItem(id){
-  if(cart[id]) delete cart[id];
+  delete cart[id];
+  document.getElementById("qty-"+id).innerText = 0;
+  document.getElementById("total-"+id).innerText = "Rp 0";
   updateSummary();
 }
 
 // ===== SCROLL TO CART =====
-function scrollToCart(){
+function scrollToCart() {
   document.querySelector(".cart").scrollIntoView({behavior:"smooth"});
-}
-
-// ===== PAYMENT TOGGLE =====
-function setupPaymentToggle(){
-  const transferInput = document.getElementById("transfer");
-  const transferNote = document.getElementById("transferNote");
-  const codInput = document.getElementById("cod");
-
-  transferInput.addEventListener("change", ()=>{ transferNote.classList.remove("hidden"); });
-  codInput.addEventListener("change", ()=>{ transferNote.classList.add("hidden"); });
 }
 
 // ===== CHECKOUT =====
 function checkout(){
-  if(Object.keys(cart).length===0){ alert("Belum ada barang!"); return; }
+  if(Object.keys(cart).length === 0){ alert("Belum ada barang!"); return; }
 
-  let nama=document.getElementById("namaPemesan").value.trim();
+  const nama = document.getElementById("namaPemesan").value.trim();
   if(!nama){ alert("Isi nama pemesan!"); return; }
 
-  let area=document.getElementById("area").value;
-  let alamat=document.getElementById("detailAlamat").value;
+  const area = document.getElementById("area").value;
+  const alamat = document.getElementById("detailAlamat").value;
 
-  let total=0; let totalItems=0;
-  for(let id in cart){ let i=cart[id]; total+=i.price*i.qty; totalItems+=i.qty; }
+  let total = 0, totalItems = 0;
+  for(let id in cart){
+    const i = cart[id];
+    total += i.price * i.qty;
+    totalItems += i.qty;
+  }
 
   let shipping = shippingDefault;
   if(area==="gadut") shipping=0;
-  else if((area==="bukittinggi"||area==="tilatang kamang") && totalItems>1) shipping=0;
-  else if(area==="bukittinggi"||area==="tilatang kamang") shipping=shippingNear;
+  else if((area==="bukittinggi" || area==="tilatang kamang") && totalItems>1) shipping=0;
+  else if(area==="bukittinggi" || area==="tilatang kamang") shipping=shippingNear;
 
-  let finalTotal=total+shipping;
+  const finalTotal = total + shipping;
 
-  let metode=document.querySelector('input[name="bayar"]:checked').value;
+  let metode = document.querySelector('input[name="bayar"]:checked').value;
 
-  let message=`Nama Pemesan: ${nama}%0A`;
-  let no=1;
+  let message = `Nama Pemesan: ${nama}%0A`;
+  let no = 1;
   for(let id in cart){
-    let i=cart[id];
-    message+=`${no}. ${i.name} x${i.qty}%0A`;
+    let i = cart[id];
+    message += `${no}. ${i.name} x${i.qty}%0A`;
     no++;
   }
-  message+=`%0AOngkir: ${shipping===0?'✅ GRATIS ONGKIR': 'Rp '+shipping.toLocaleString()}`;
-  message+=`%0ATotal Bayar: Rp ${finalTotal.toLocaleString()}`;
-  message+=`%0AMetode Bayar: ${metode}`;
-  message+=`%0AArea: ${area}`;
-  message+=`%0AAlamat: ${alamat}`;
+  message += `%0AOngkir: ${shipping===0 ? "GRATIS ONGKIR ✅" : "Rp "+shipping.toLocaleString()}`;
+  message += `%0ATotal Bayar: Rp ${finalTotal.toLocaleString()}`;
+  message += `%0AMetode Bayar: ${metode}`;
+  message += `%0AArea: ${area}`;
+  message += `%0AAlamat: ${alamat}`;
 
   window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank");
 }
