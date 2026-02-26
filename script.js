@@ -1,172 +1,174 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function() {
 
-  // ================= PENGATURAN =================
-  let shippingNear = 8000;
-  let shippingDefault = 15000;
-  const whatsappNumber = "628xxxxxxxxxx";
+const productList = document.getElementById("productList");
+const cartItemsDiv = document.getElementById("cartItems");
+const summaryDiv = document.getElementById("summary");
+const promoInfoDiv = document.getElementById("promoInfo");
+const floating = document.getElementById("floatingCheckout");
+const transferNoteDiv = document.getElementById("transferNote");
 
-  // ================= FORMAT RUPIAH =================
-  function formatRupiah(num){
-    return "Rp. " + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");
-  }
+let products = await fetch('products.json').then(r=>r.json());
+let ongkirData = await fetch('ongkir.json').then(r=>r.json());
+let cart = {};
 
-  // ================= DATA PRODUK =================
-  const products = [
-    { id:1, name:"Minyak Kita 1 Dus", price:320000, img:"https://via.placeholder.com/100", active:true },
-    { id:2, name:"Minyak Kita 1 Liter", price:16000, img:"https://via.placeholder.com/100", active:true },
-    { id:3, name:"Minyak Kita 2 Liter", price:31000, img:"https://via.placeholder.com/100", active:true },
-    { id:4, name:"Beras 5 Kg", price:65000, img:"https://via.placeholder.com/100", active:true },
-    { id:5, name:"Beras 10 Kg", price:180000, img:"https://via.placeholder.com/100", active:true },
-    { id:6, name:"Gas 3 Kg", price:22000, img:"https://via.placeholder.com/100", active:true },
-    { id:7, name:"Gas 5 Kg", price:85000, img:"https://via.placeholder.com/100", active:true }
-  ];
+const whatsappNumber = "6281266221333";
 
-  let cart = {};
-  const productList = document.getElementById("productList");
+function formatRupiah(num){
+  return "Rp " + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".");
+}
 
-  // ================= RENDER PRODUK =================
-  function renderProducts(){
-    productList.innerHTML="";
-    products.forEach(p=>{
-      productList.innerHTML += `
-        <div class="product">
-          <img src="${p.img}">
-          <div style="flex:1">
-            <b>${p.name}</b>
-            <div class="price">${formatRupiah(p.price)}</div>
-          </div>
-          <div>
-            <button class="qty-btn" onclick="changeQty(${p.id},-1)">-</button>
-            <span id="qty-${p.id}">0</span>
-            <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
+// ===== Render Produk =====
+function renderProducts(){
+  productList.innerHTML="";
+  products.forEach(p=>{
+    productList.innerHTML += `
+      <div class="product">
+        <div class="info">
+          <b>${p.name}</b>
+          <div class="price-total" id="total-${p.id}">${formatRupiah(p.price)}</div>
+        </div>
+        <div>
+          <button onclick="buyProduct(${p.id})">Beli</button>
+          <div id="qty-controls-${p.id}" style="display:none; margin-top:5px;">
+            <button onclick="changeQty(${p.id},-1)">-</button>
+            <span id="qty-${p.id}">0</span> pcs
+            <button onclick="changeQty(${p.id},1)">+</button>
           </div>
         </div>
-      `;
-    });
+      </div>
+    `;
+  });
+}
+
+renderProducts();
+
+// ===== Tambah / Kurang =====
+window.buyProduct = function(id){
+  if(!cart[id]) cart[id] = {...products.find(p=>p.id===id), qty:1};
+  document.getElementById(`qty-controls-${id}`).style.display="block";
+  updateSummary();
+}
+
+window.changeQty = function(id,delta){
+  if(!cart[id] && delta>0) cart[id] = {...products.find(p=>p.id===id), qty:1};
+  else if(cart[id]) cart[id].qty += delta;
+  if(cart[id]?.qty <=0) delete cart[id];
+  document.getElementById(`qty-controls-${id}`).style.display = cart[id]? "block":"none";
+  updateSummary();
+}
+
+// ===== Update Payment Note =====
+window.updatePaymentNote = function(){
+  const method = document.querySelector('input[name="payment"]:checked')?.value;
+  if(method === "TRANSFER"){
+    transferNoteDiv.innerHTML = "No rek UDE Sembako akan kami kirim di WhatsApp setelah memesan";
+  } else {
+    transferNoteDiv.innerHTML = "";
   }
+}
 
-  renderProducts();
+// ===== Update Ringkasan Cart =====
+window.updateSummary = function(){
+  let total=0, totalItems=0;
+  let area = document.getElementById("area").value;
+  let cartHtml = "";
 
-  // ================= FLOATING CLICK SCROLL =================
-  let floatingBtn = document.getElementById("floatingCheckout");
-  if(floatingBtn){
-    floatingBtn.addEventListener("click", function(){
-      document.querySelector(".cart").scrollIntoView({behavior:"smooth"});
-    });
-  }
+  Object.values(cart).forEach((item,index)=>{
+    const subtotal = item.price*item.qty;
+    total += subtotal;
+    totalItems += item.qty;
+    document.getElementById(`qty-${item.id}`).innerText = item.qty;
+    document.getElementById(`total-${item.id}`).innerText = formatRupiah(subtotal);
 
-  // ================= TAMBAH / KURANG =================
-  window.changeQty = function(id, delta){
-    let product = products.find(p=>p.id===id);
-    if(!cart[id]){
-      if(delta>0) cart[id] = {...product, qty:1};
-    } else {
-      cart[id].qty += delta;
-      if(cart[id].qty <=0) delete cart[id];
-    }
-    updateSummary();
-  }
-
-  // ================= UPDATE RINGKASAN =================
-  window.updateSummary = function(){
-    let total = 0;
-    let totalItems = 0;
-
-    products.forEach(p=>{
-      let qtyEl = document.getElementById("qty-"+p.id);
-      if(qtyEl) qtyEl.innerText = cart[p.id]?.qty || 0;
-    });
-
-    let cartHtml = "";
-    Object.values(cart).forEach(item=>{
-      total += item.price * item.qty;
-      totalItems += item.qty;
-
-      cartHtml += `
-        <div class="cart-item">
-          <div>${item.name} x${item.qty}</div>
-          <div>
-            <button onclick="changeQty(${item.id},-1)">-</button>
-            <button onclick="changeQty(${item.id},1)">+</button>
-          </div>
+    cartHtml += `
+      <div class="cart-item">
+        <b>${index+1}. ${item.name}</b>
+        <div>
+          ${formatRupiah(subtotal)}
+          <button onclick="changeQty(${item.id},-1)">-</button>
+          <button onclick="changeQty(${item.id},1)">+</button>
+          <button onclick="deleteItem(${item.id})">🗑️</button>
         </div>
-      `;
-    });
+      </div>
+    `;
+  });
 
-    document.getElementById("cartItems").innerHTML = cartHtml || "Belum ada barang";
+  cartItemsDiv.innerHTML = cartHtml || "Belum ada barang";
 
-    let area = document.getElementById("area").value;
-    let shipping = shippingDefault;
-    let hasBeras10kg = cart[5] ? true : false;
-    let promoText = "";
+  // Ongkir
+  let shipping = ongkirData.default;
+  let promoText="";
+  let hasBeras10kg = cart[5]?true:false;
 
-    if(area==="gadut"){
-      shipping=0;
-      promoText='<div class="badge">Area Anda GRATIS ONGKIR 🎉</div>';
-    }
-    else if((area==="bukittinggi" || area==="tilatang kamang") && (totalItems>1 || hasBeras10kg)){
-      shipping=0;
-      promoText='<div class="badge">GRATIS ONGKIR 🎉</div>';
-    }
-    else if(area==="bukittinggi" || area==="tilatang kamang"){
-      shipping=shippingNear;
-    }
-
-    document.getElementById("promoInfo").innerHTML = promoText;
-    let finalTotal = total + shipping;
-
-    document.getElementById("summary").innerText =
-      "Total Barang: " + formatRupiah(total) +
-      " | Ongkir: " + formatRupiah(shipping) +
-      " | Total Bayar: " + formatRupiah(finalTotal);
-
-    // ===== FLOATING CHECKOUT =====
-    if(floatingBtn){
-      floatingBtn.style.display = totalItems>0 ? "block" : "none";
-    }
+  if(ongkirData.gratisArea.includes(area)){
+    shipping = 0;
+    promoText='<div class="badge" style="color:green; font-weight:bold;">GRATIS ONGKIR ✓</div>';
+  } else if(ongkirData.nearbyArea.includes(area) && (totalItems>1 || hasBeras10kg)){
+    shipping=0;
+    promoText='<div class="badge" style="color:green; font-weight:bold;">GRATIS ONGKIR ✓</div>';
+  } else if(ongkirData.nearbyArea.includes(area)){
+    shipping = ongkirData.near;
   }
 
-  // ================= CHECKOUT =================
-  window.checkout = function(){
-    if(Object.keys(cart).length === 0){
-      alert("Belum ada barang!");
-      return;
-    }
+  promoInfoDiv.innerHTML = promoText;
 
-    let area = document.getElementById("area").value;
-    let detail = document.getElementById("detailAlamat").value;
-    if(area===""){
-      alert("Pilih kecamatan dulu");
-      return;
-    }
+  summaryDiv.innerHTML = `
+    Ongkir: ${shipping>0?formatRupiah(shipping):"GRATIS"} | <b>Total Bayar: ${formatRupiah(total+shipping)}</b>
+  `;
 
-    let total = 0;
-    let totalItems = 0;
-    Object.values(cart).forEach(i=>{
-      total += i.price*i.qty;
-      totalItems += i.qty;
-    });
+  // Floating checkout
+  floating.style.display = totalItems>0? "block":"none";
+}
 
-    let shipping = shippingDefault;
-    let hasBeras10kg = cart[5] ? true : false;
+// ===== Delete Item =====
+window.deleteItem = function(id){
+  delete cart[id];
+  document.getElementById(`qty-controls-${id}`).style.display="none";
+  updateSummary();
+}
 
-    if(area==="gadut") shipping=0;
-    else if((area==="bukittinggi" || area==="tilatang kamang") && (totalItems>1 || hasBeras10kg)) shipping=0;
-    else if(area==="bukittinggi" || area==="tilatang kamang") shipping=shippingNear;
-
-    let finalTotal = total + shipping;
-
-    let message="Pesanan:%0A";
-    Object.values(cart).forEach(i=>{
-      message += `${i.name} x${i.qty}%0A`;
-    });
-    message += `%0AArea: ${area}`;
-    message += `%0AAlamat: ${detail}`;
-    message += `%0ATotal Barang: ${formatRupiah(total)}`;
-    message += `%0AOngkir: ${formatRupiah(shipping)}`;
-    message += `%0ATotal Bayar: ${formatRupiah(finalTotal)}`;
-
-    window.open(`https://wa.me/${whatsappNumber}?text=${message}`,"_blank");
+// ===== Checkout =====
+window.checkout = function(){
+  if(Object.keys(cart).length==0){
+    alert("Belum ada barang!");
+    return;
   }
 
-});
+  const name = document.getElementById("customerName").value.trim();
+  const detail = document.getElementById("detailAlamat").value.trim();
+  const area = document.getElementById("area").value;
+  const method = document.querySelector('input[name="payment"]:checked')?.value;
+
+  if(!name || !detail || !area || !method){
+    alert("Lengkapi semua info, termasuk metode bayar!");
+    return;
+  }
+
+  let total = 0;
+  let message = `Nama Pemesan/Toko: ${name}%0A`;
+
+  Object.values(cart).forEach((item,index)=>{
+    const subtotal = item.price*item.qty;
+    total += subtotal;
+    message += `${index+1}. ${item.name} x${item.qty} pcs = ${formatRupiah(subtotal)}%0A`;
+  });
+
+  // Ongkir
+  let shipping = ongkirData.default;
+  if(ongkirData.gratisArea.includes(area)) shipping=0;
+  else if(ongkirData.nearbyArea.includes(area) && (Object.values(cart).reduce((a,b)=>a+b.qty,0)>1 || cart[5])) shipping=0;
+  else if(ongkirData.nearbyArea.includes(area)) shipping=ongkirData.near;
+
+  message += `Ongkir: ${shipping>0?formatRupiah(shipping):"GRATIS ONGKIR"}%0A`;
+  message += `Total Bayar: ${formatRupiah(total+shipping)}%0A`;
+  message += `METODE BAYAR: ${method}%0A`;
+
+  window.open(`https://wa.me/${whatsappNumber}?text=${message}`,"_blank");
+}
+
+// ===== Scroll to Cart =====
+window.scrollToCart = function(){
+  document.querySelector(".cart").scrollIntoView({behavior:"smooth"});
+}
+
+}); // DOMContentLoaded
