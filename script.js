@@ -1,4 +1,3 @@
-```javascript
 const whatsappNumber = "6281266221333";
 let shippingNear = 8000;
 let shippingDefault = 15000;
@@ -149,3 +148,4 @@ function checkout() {
   window.open(`https://wa.me/${whatsappNumber}?text=${message}`, "_blank");
 }
 ```
+
