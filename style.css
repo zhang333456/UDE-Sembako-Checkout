@@ -1,9 +1,15 @@
+/* =========================
+   GLOBAL
+========================= */
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   background: #f4f6f9;
 }
 
+/* =========================
+   HEADER
+========================= */
 header {
   background: linear-gradient(90deg, #006400, #228B22);
   color: white;
@@ -22,12 +28,18 @@ header {
   background: #fff3cd;
 }
 
+/* =========================
+   CONTAINER
+========================= */
 .container {
   max-width: 650px;
   margin: auto;
   padding: 15px;
 }
 
+/* =========================
+   PRODUCT
+========================= */
 .product {
   background: white;
   padding: 12px;
@@ -37,6 +49,11 @@ header {
   display: flex;
   align-items: center;
   gap: 10px;
+  transition: 0.2s;
+}
+
+.product:hover {
+  transform: translateY(-2px);
 }
 
 .product img {
@@ -64,6 +81,9 @@ header {
   text-align: center;
 }
 
+/* =========================
+   BUTTONS
+========================= */
 .qty-btn {
   background: #228B22;
   border: none;
@@ -72,6 +92,11 @@ header {
   border-radius: 6px;
   cursor: pointer;
   margin: 2px;
+  transition: 0.2s;
+}
+
+.qty-btn:hover {
+  background: #1e7a1e;
 }
 
 .buy-btn {
@@ -82,8 +107,16 @@ header {
   border-radius: 6px;
   cursor: pointer;
   margin-bottom: 6px;
+  transition: 0.2s;
 }
 
+.buy-btn:hover {
+  background: #004d00;
+}
+
+/* =========================
+   CART
+========================= */
 .cart {
   background: white;
   padding: 15px;
@@ -92,20 +125,68 @@ header {
   margin-top: 20px;
 }
 
+.cart h3 {
+  margin-top: 0;
+}
+
 .cart-item {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: bold;
+  border-bottom: 1px dashed #ddd;
+  padding-bottom: 5px;
 }
 
 .total {
   font-weight: bold;
   margin-top: 10px;
   color: #009933;
+  font-size: 15px;
 }
 
+/* =========================
+   FORM
+========================= */
+.cart input,
+.cart select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.cart select {
+  background: white;
+  cursor: pointer;
+}
+
+/* =========================
+   PAYMENT
+========================= */
+.metodeBayar {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.metodeBayar input {
+  margin-right: 6px;
+}
+
+#transferNote,
+.note {
+  font-size: 10px;
+  color: gray;
+  margin-top: 2px;
+}
+
+/* =========================
+   CHECKOUT BUTTON
+========================= */
 .checkout {
   background: #25D366;
   border: none;
@@ -113,12 +194,21 @@ header {
   padding: 10px;
   border-radius: 8px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 12px;
   cursor: pointer;
   font-weight: bold;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
-.floatingCheckout {
+.checkout:hover {
+  background: #1ebe5d;
+}
+
+/* =========================
+   FLOATING CHECKOUT
+========================= */
+#floatingCheckout {
   position: fixed;
   bottom: 15px;
   left: 50%;
@@ -130,22 +220,17 @@ header {
   cursor: pointer;
   display: none;
   font-weight: bold;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  transition: 0.2s;
 }
 
-.metodeBayar {
-  margin-top: 10px;
+#floatingCheckout:hover {
+  background: #004d00;
 }
 
-.metodeBayar input {
-  margin-right: 6px;
-}
-
-#transferNote, .note {
-  font-size: 10px;
-  color: gray;
-  margin-top: 2px;
-}
-
+/* =========================
+   FOOTER INFO
+========================= */
 .alamatGudang {
   font-size: 10px;
   color: #888;
