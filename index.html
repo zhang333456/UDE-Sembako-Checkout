@@ -2,57 +2,73 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UDE Sembako Bukittinggi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>UDE Sembako Bukittinggi</header>
+<!-- HEADER -->
+<header>
+  <img src="logo-ude.png" alt="Logo UDE Sembako" class="logo">
+  <h1>UDE Sembako Bukittinggi</h1>
+  <p>Antar Alamat – Gratis Ongkir sesuai Area</p>
+</header>
 
-<div class="sub">
-🎁 GRATIS ONGKIR: Gadut (semua pembelian) <br>
-Bukittinggi & Tilatang Kamang jika beli >1 item <br>
-atau beli Beras 10kg (Rp. 180.000)
+<!-- SUB-INFO -->
+<p>🎁 GRATIS ONGKIR: Gadut (semua pembelian), Bukittinggi & Tilatang Kamang jika beli >1 item atau beli Beras 10kg (Rp. 180.000)</p>
+
+<!-- DAFTAR PRODUK -->
+<h2>Produk</h2>
+<div id="productList">
+  <!-- JS akan render produk di sini -->
 </div>
 
-<div class="container">
-  <div id="productList"></div>
+<!-- CART -->
+<h2>Keranjang</h2>
 
-  <div class="cart">
-    <h3>Keranjang</h3>
-    <div id="cartItems">Belum ada barang</div>
-    <div id="promoInfo"></div>
-    <div class="total" id="summary">Total: Rp. 0</div>
+<!-- Nama & Alamat -->
+<input type="text" id="customerName" placeholder="Nama Pemesan / Toko">
+<select id="area">
+  <option value="">Pilih Lokasi</option>
+  <option value="bukittinggi">Bukittinggi</option>
+  <option value="gadut">Gadut</option>
+  <option value="tilatang kamang">Tilatang Kamang</option>
+  <option value="lainnya">Luar Area</option>
+</select>
+<input type="text" id="detailAlamat" placeholder="Detail alamat lengkap">
 
-    <input type="text" id="namaPemesan" placeholder="Nama Pemesan / Nama Toko">
-    <input type="text" id="detailAlamat" placeholder="Detail alamat lengkap">
-
-    <select id="area" onchange="updateSummary()">
-      <option value="">Pilih Kecamatan</option>
-      <option value="bukittinggi">Bukittinggi</option>
-      <option value="gadut">Gadut</option>
-      <option value="tilatang kamang">Tilatang Kamang</option>
-      <option value="lainnya">Luar Area</option>
-    </select>
-
-    <div class="metodeBayar">
-      <label><input type="radio" name="bayar" value="COD" onclick="updateSummary()"> COD</label>
-      <label><input type="radio" name="bayar" value="TRANSFER" onclick="updateSummary()"> TRANSFER BANK</label>
-      <div id="transferNote">*No rek UDE Sembako akan dikirim via WhatsApp setelah memesan</div>
-      <div class="note">Jangan khawatir, Anda masih bisa membatalkan pesanan jika sudah terlanjur memesan dengan menghubungi kami :)</div>
-    </div>
-
-    <button class="checkout" onclick="checkout()">Checkout via WhatsApp</button>
-
-    <div class="alamatGudang"><em>Alamat gudang kami: Gadut, Tilatang Kamang, Agam</em></div>
-  </div>
+<!-- Cart Items -->
+<div id="cartItems">
+  <p>Belum ada barang</p>
 </div>
 
+<!-- Total & Ongkir -->
+<p>Total Barang: <span id="totalItems">Rp. 0</span></p>
+<p>Ongkir: <span id="shippingCost">Rp. 0</span></p>
+<p><b>Total Bayar: <span id="summary">Rp. 0</span></b></p>
+
+<!-- Metode Pembayaran -->
+<label>
+  <input type="radio" name="payment" value="cod" checked> COD (Bayar di Tempat)
+</label>
+<label>
+  <input type="radio" name="payment" value="transfer"> Transfer Bank
+</label>
+<p id="noteTransfer">No Rekening UDE Sembako akan dikirim ke WhatsApp Anda setelah memesan.<br>Jangan khawatir, Anda masih bisa membatalkan pesanan.</p>
+
+<!-- Tombol Kirim Pesanan -->
+<button id="checkoutBtn">Kirim Pesanan ke WhatsApp Admin</button>
+
+<!-- Floating scroll ke cart -->
 <div id="floatingCheckout" onclick="scrollToCart()">
-  Geser ke bawah untuk checkout ⬇
+  ⬇ Geser ke bawah untuk checkout
 </div>
 
-<script src="script.js"></script>
+<!-- Footer -->
+<p><em>Alamat gudang kami: Gadut, Tilatang Kamang, Agam.</em></p>
+
+<script src="products.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>
